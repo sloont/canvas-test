@@ -14,15 +14,16 @@ const mouse = {
     y: undefined,
 };
 
-canvas.addEventListener("mousemove", (event) => {
-    mouse.x = event.x - 50;
-    mouse.y = event.y - 50;
-});
-
 canvas.addEventListener("mousedown", (event) => {
     mouse.x = event.x - 50;
     mouse.y = event.y - 50;
-    checkMouseClick(orbCollection[0], mouse);
+    orbCollection.forEach(ballA => {
+        checkMouseClick(ballA, mouse);
+        if (checkMouseClick(ballA, mouse)) {
+            applyForceWithClick(ballA, mouse);
+        }
+    })
+    
 });
 
 class Orb {
@@ -60,12 +61,12 @@ class Orb {
 
         if (this.xpos > xBound - this.radius) {
             this.xpos = xBound - this.radius - 5;
-            this.dx *= -1;
+            this.dx *= -0.9;
         }
 
         else if (this.xpos < this.radius) {
             this.xpos = this.radius + 5;
-            this.dx *= -1;
+            this.dx *= -0.9;
         }
 
         if (this.ypos > yBound - this.radius) {
@@ -92,7 +93,7 @@ const randomNumber = (min, max) => {
     return Math.random() * (max - min) + min;
 }
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i < 2; i++) {
     let randomx = randomNumber(32, (canvas.width - 32));
     let randomy = randomNumber(32, (canvas.height - 32));
     orbCollection.push(new Orb(randomx, randomy, 32, 1));
@@ -114,9 +115,10 @@ const animate = () => {
                 }
             }
         });
+        
     });
     requestAnimationFrame(animate);
 }
 
-// animate();
-orbCollection[0].draw(context);
+animate();
+// orbCollection[0].draw(context);
